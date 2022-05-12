@@ -79,7 +79,7 @@ function SignIn() {
       </TitleContainer>
 
       <FormContainer>
-        <SignInForm ref={formRef} onSubmit={handleSubmit}>
+        <SignInForm ref={formRef} onSubmit={handleSubmit} autoComplete="off">
           <Input name="email" placeholder="E-mail" />
 
           <Input name="password" type="password" placeholder="Senha" />
