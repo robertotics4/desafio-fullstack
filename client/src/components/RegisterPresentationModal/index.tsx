@@ -65,6 +65,8 @@ function RegisterPresentationModal({ isOpen, setIsOpen }: ModalProps) {
         });
 
         Swal.fire('Sucesso!', 'Espetáculo cadastrado com sucesso!', 'success');
+
+        setIsOpen();
       } catch (err: any) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -83,7 +85,7 @@ function RegisterPresentationModal({ isOpen, setIsOpen }: ModalProps) {
         stopLoading();
       }
     },
-    [startLoading, stopLoading, registerPresentation],
+    [startLoading, stopLoading, registerPresentation, setIsOpen],
   );
 
   return (

@@ -108,11 +108,7 @@ function RegisterReservationModal({
           return;
         }
 
-        Swal.fire(
-          'Falha no cadastro',
-          'Verifique as informações do espetáculo',
-          'error',
-        );
+        Swal.fire('Falha na reeserva', 'Falha ao reservar poltrona', 'error');
       } finally {
         stopLoading();
       }
@@ -123,8 +119,6 @@ function RegisterReservationModal({
       stopLoading,
       presentation.id,
       registerReservation,
-      reservations,
-      setReservations,
       setIsOpen,
     ],
   );
