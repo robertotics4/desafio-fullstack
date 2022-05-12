@@ -30,7 +30,7 @@ function FinanceModal({ isOpen, setIsOpen, presentation }: ModalProps) {
     }
 
     loadFinances();
-  }, [presentation.id, showFinances, presentation, finances]);
+  }, [presentation.id, presentation, finances]);
 
   return (
     <Modal
