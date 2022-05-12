@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  server:
+    build:
+      context: ./server/
+    command: npm run dev
+    volumes:
+      - ./server/:/usr/app
+      - /usr/app/node_modules
+    ports:
+      - "3333:3333"
+    env_file: ./server/.env
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+  client:
+    build:
+      context: ./client/
+    command: npm start
+    volumes:
+      - ./client/:/usr/app
+      - /usr/app/node_modules
+    depends_on:
+      - server
+    ports:
+      - "3000:3000"
+    env_file: ./server/.env
