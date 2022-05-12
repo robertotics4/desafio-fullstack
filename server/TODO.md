@@ -37,38 +37,34 @@
 [x] Deve ser possível listar todos os espetáculos
 [x] Deve ser possível buscar os espetáculos pela data
 [x] Deve ser possível listar os espetáculos pelo nome
-[ ] Deve ser possível cadastrar uma imagem para o espetáculo.
-[ ] Deve ser possível editar as informações de um espetáculo.
-[ ] Deve ser possível vincular as poltronas aos espetáculos automaticamente após a criação.
-[ ] As poltronas vinculadas aos espetáculos deverão iniciar com a disponibilidade = true
-
-
-**RNF**
-[ ] Utilizar o Multer para upload da imagem do espetáculo.
+[x] Deve ser possível cadastrar uma imagem para o espetáculo.
+[x] Deve ser possível editar as informações de um espetáculo.
+[x] Deve ser possível vincular as poltronas aos espetáculos automaticamente após a criação.
+[x] As poltronas vinculadas aos espetáculos deverão iniciar com a disponibilidade = true
 
 **RN**
 [x] Não deve ser possível cadastrar espetáculos com a mesma data.
 [x] Não deve ser possível cadastrar um novo espetáculo sem que seja informado o nome, descrição e data.
 [x] Não deve ser possível cadastrar um novo espetáculo se já houver um outro espetáculo no mesmo dia.
 [x] Não deve ser possível criar espetáculos com a data inferior à do dia atual
-[ ] Não deve ser possível salvar as alterações sem que seja informado o nome, descrição e data.
-[ ] Não deve ser possível salvar as alterações com uma data que já utilizada num outro espetáculo.
-[ ] Não deve ser possível cadastrar poltronas se o usuário não estiver logado
-[ ] Não deve ser possível cadastrar poltronas se o usuário não for administrador
+[x] Não deve ser possível salvar as alterações sem que seja informado o nome, descrição e data.
+[x] Não deve ser possível salvar as alterações com uma data que já utilizada num outro espetáculo.
+[x] Não deve ser possível cadastrar poltronas se o usuário não estiver logado
+[x] Não deve ser possível cadastrar poltronas se o usuário não for administrador
 
 # Reservas (Reservations)
 **RF**
-[ ] Deve ser possível reservar poltronas por espetáculo.
-[ ] Deve ser possível cancelar poltronas por espetáculo.
-[ ] Deve ser possível mostrar o total de lugares reservados por espetáculo.
-[ ] Deve ser possível mostrar o total de lugares disponíveis por espetáculo.
-[ ] O valor padrão de reserva é R$ 27,99
+[x] Deve ser possível reservar poltronas por espetáculo.
+[x] Deve ser possível cancelar poltronas por espetáculo.
+[x] Deve ser possível mostrar o total de lugares reservados por espetáculo.
+[x] Deve ser possível mostrar o total de lugares disponíveis por espetáculo.
+[x] O valor padrão de reserva é R$ 27,99
 
 **RN**
-[ ] Não deve ser possível reservar poltronas que já estejam reservadas
-[ ] Não deve ser possível efetuar uma reserva sem informar o id do usuário, o id das poltronas e o id do espetáculo
+[x] Não deve ser possível reservar poltronas que já estejam reservadas
+[x] Não deve ser possível efetuar uma reserva sem informar o id do usuário, o id das poltronas e o id do espetáculo
 
 # Financeiro (Finance)
 
-[ ] Deve ser possível exibir o total de arrecadação (Sendo que cada poltrona reservada custe R$: 27,99)
-[ ] Deve ser possível calcular e exibir os impostos (14,33%)
+[x] Deve ser possível exibir o total de arrecadação (Sendo que cada poltrona reservada custe R$: 27,99)
+[x] Deve ser possível calcular e exibir os impostos (14,33%)

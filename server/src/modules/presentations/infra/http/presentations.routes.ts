@@ -45,6 +45,7 @@ presentationsRoutes.put(
       name: Joi.string().required(),
       description: Joi.string().required(),
       date: Joi.date().required(),
+      imageUrl: Joi.string(),
     },
   }),
   updatePresentationController.handle,
