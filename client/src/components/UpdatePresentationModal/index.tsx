@@ -1,5 +1,5 @@
 import { FormHandles } from '@unform/core';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLoading } from 'react-use-loading';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
@@ -14,30 +14,45 @@ import { TextArea } from '../TextArea';
 import { ModalContent, RegisterForm, Title } from './styles';
 import { InputMask } from '../InputMask';
 import { usePresentations } from '../../hooks/presentations';
+import Presentation from '../../types/Presentation';
+import Loading from '../Loading';
 
 interface ModalProps {
   isOpen: boolean;
   setIsOpen: () => void;
+  presentation: Presentation;
 }
 
-interface RegisterPresentationFormData {
+interface UpdatePresentationFormData {
+  id: string;
   name: string;
   description: string;
   date: string;
   hour: string;
-  imageUrl: string;
+  imageUrl?: string;
 }
 
-function RegisterPresentationModal({ isOpen, setIsOpen }: ModalProps) {
+function UpdatePresentationModal({
+  isOpen,
+  setIsOpen,
+  presentation,
+}: ModalProps) {
   const formRef = useRef<FormHandles>(null);
-  const [{ isLoading }, { start: startLoading, stop: stopLoading }] =
+  const { updatePresentation, presentations, setPresentations } =
+    usePresentations();
+  const [{ isLoading, message }, { start: startLoading, stop: stopLoading }] =
     useLoading();
-  const { registerPresentation } = usePresentations();
+  const [selectedPresentation, setSelectedPresentation] =
+    useState<Presentation>({} as Presentation);
+
+  useEffect(() => {
+    setSelectedPresentation(presentation);
+  }, [presentation, selectedPresentation]);
 
   const handleSubmit = useCallback(
-    async (data: RegisterPresentationFormData) => {
+    async (data: UpdatePresentationFormData) => {
       try {
-        startLoading('Cadastrando espetáculo...');
+        startLoading('Atualizando espetáculo...');
 
         formRef.current?.setErrors({});
 
@@ -57,14 +72,16 @@ function RegisterPresentationModal({ isOpen, setIsOpen }: ModalProps) {
           new Date(),
         );
 
-        await registerPresentation({
+        const updated = await updatePresentation({
+          id: data.id,
           name: data.name,
           description: data.description,
-          imageUrl: data.imageUrl || undefined,
           date: parsedDate,
+          imageUrl: data.imageUrl || undefined,
         });
 
-        Swal.fire('Sucesso!', 'Espetáculo cadastrado com sucesso!', 'success');
+        Swal.fire('Sucesso', 'Espetáculo alterado com sucesso!', 'success');
+        setIsOpen();
       } catch (err: any) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -83,7 +100,7 @@ function RegisterPresentationModal({ isOpen, setIsOpen }: ModalProps) {
         stopLoading();
       }
     },
-    [startLoading, stopLoading, registerPresentation],
+    [startLoading, stopLoading, updatePresentation, setIsOpen],
   );
 
   return (
@@ -98,9 +115,20 @@ function RegisterPresentationModal({ isOpen, setIsOpen }: ModalProps) {
       }}
     >
       <ModalContent>
-        <Title>Cadastro de Espetáculo</Title>
+        <Title>Editar Espetáculo</Title>
 
-        <RegisterForm ref={formRef} onSubmit={handleSubmit}>
+        <RegisterForm
+          ref={formRef}
+          initialData={{
+            id: presentation.id,
+            name: presentation.name,
+            description: presentation.description,
+            imageUrl: presentation.imageUrl || undefined,
+          }}
+          onSubmit={handleSubmit}
+        >
+          <Input name="id" disabled />
+
           <Input name="name" placeholder="Nome do espetáculo" />
 
           <TextArea name="description" placeholder="Descrição" />
@@ -120,12 +148,16 @@ function RegisterPresentationModal({ isOpen, setIsOpen }: ModalProps) {
           <Input name="imageUrl" type="url" placeholder="URL da imagem" />
 
           <Button loading={isLoading} type="submit">
-            Cadastrar Espetáculo
+            Atualizar Espetáculo
           </Button>
         </RegisterForm>
       </ModalContent>
+
+      {isLoading && (
+        <Loading isOpen={isLoading} message={message} setIsOpen={stopLoading} />
+      )}
     </Modal>
   );
 }
 
-export { RegisterPresentationModal };
+export { UpdatePresentationModal };

@@ -12,8 +12,7 @@ interface ModalProps {
 }
 
 function FinanceModal({ isOpen, setIsOpen, presentation }: ModalProps) {
-  const { showFinances } = usePresentations();
-  const [financeState, setFinanceState] = useState<Finance>({} as Finance);
+  const { showFinances, finances } = usePresentations();
 
   const convertToCurrencyFormat = useCallback((value: number) => {
     const formatCurrency = new Intl.NumberFormat('pt-BR', {
@@ -27,13 +26,11 @@ function FinanceModal({ isOpen, setIsOpen, presentation }: ModalProps) {
 
   useEffect(() => {
     async function loadFinances() {
-      const finance = await showFinances(presentation.id);
-
-      setFinanceState(finance);
+      await showFinances(presentation.id);
     }
 
     loadFinances();
-  }, [presentation.id, showFinances, presentation]);
+  }, [presentation.id, showFinances, presentation, finances]);
 
   return (
     <Modal
@@ -51,17 +48,17 @@ function FinanceModal({ isOpen, setIsOpen, presentation }: ModalProps) {
 
         <div>
           <h2>{presentation.name}</h2>
-          <p>{`Total de poltronas: ${financeState.totalSeats}`}</p>
-          <p>{`Total de poltronas reservadas: ${financeState.totalReservedSeats}`}</p>
-          <p>{`Total de poltronas disponíveis: ${financeState.totalAvailableSeats}`}</p>
+          <p>{`Total de poltronas: ${finances.totalSeats}`}</p>
+          <p>{`Total de poltronas reservadas: ${finances.totalReservedSeats}`}</p>
+          <p>{`Total de poltronas disponíveis: ${finances.totalAvailableSeats}`}</p>
           <p>{`Total arrecadado (bruto): ${convertToCurrencyFormat(
-            financeState.totalAmount,
+            finances.totalAmount,
           )}`}</p>
           <p>{`Total de impostos: ${convertToCurrencyFormat(
-            financeState.totalTaxes,
+            finances.totalTaxes,
           )}`}</p>
           <p>{`Total arrecadado (líquido): ${convertToCurrencyFormat(
-            financeState.totalAmountWithTaxes,
+            finances.totalAmountWithTaxes,
           )}`}</p>
         </div>
       </ModalContent>

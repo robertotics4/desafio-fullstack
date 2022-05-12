@@ -11,6 +11,7 @@ import { Input } from '../../components/Input';
 import Button from '../../components/Button';
 import { useAuth } from '../../hooks/auth';
 import getValidationErrors from '../../utils/getValidationErrors';
+import Loading from '../../components/Loading';
 
 interface SignInFormData {
   email: string;
@@ -19,7 +20,7 @@ interface SignInFormData {
 
 function SignIn() {
   const formRef = useRef<FormHandles>(null);
-  const [{ isLoading }, { start: startLoading, stop: stopLoading }] =
+  const [{ isLoading, message }, { start: startLoading, stop: stopLoading }] =
     useLoading();
   const { signIn } = useAuth();
   const history = useHistory();
@@ -84,11 +85,13 @@ function SignIn() {
 
           <Input name="password" type="password" placeholder="Senha" />
 
-          <Button loading={isLoading} type="submit">
-            Entrar
-          </Button>
+          <Button type="submit">Entrar</Button>
         </SignInForm>
       </FormContainer>
+
+      {isLoading && (
+        <Loading isOpen={isLoading} message={message} setIsOpen={stopLoading} />
+      )}
     </Container>
   );
 }

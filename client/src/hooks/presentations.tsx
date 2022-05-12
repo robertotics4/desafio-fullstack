@@ -8,6 +8,7 @@ import Finance from '../types/Finance';
 
 interface PresentationsContextData {
   presentations: Presentation[];
+  finances: Finance;
   setPresentations(presentations: Presentation[]): void;
   loadPresentations(): Promise<void>;
   registerPresentation({
@@ -22,6 +23,13 @@ interface PresentationsContextData {
   }: GetSeatsAvailableProps): Promise<PresentationSeat[]>;
   removePresentation(presentationId: string): Promise<void>;
   showFinances(presentationId: string): Promise<Finance>;
+  updatePresentation({
+    id,
+    name,
+    description,
+    date,
+    imageUrl,
+  }: PresentationUpdateProps): Promise<Presentation>;
 }
 
 interface PresentationsProviderProps {
@@ -40,6 +48,14 @@ interface GetSeatsAvailableProps {
   availability: boolean;
 }
 
+interface PresentationUpdateProps {
+  id: string;
+  name: string;
+  description: string;
+  date: Date;
+  imageUrl?: string;
+}
+
 const PresentationsContext = createContext<PresentationsContextData>(
   {} as PresentationsContextData,
 );
@@ -54,6 +70,7 @@ function PresentationsProvider({ children }: PresentationsProviderProps) {
 
     return [] as Presentation[];
   });
+  const [finances, setFinances] = useState<Finance>({} as Finance);
 
   const loadPresentations = useCallback(async () => {
     const response = await api.get<Presentation[]>('/presentations');
@@ -84,9 +101,11 @@ function PresentationsProvider({ children }: PresentationsProviderProps) {
         imageUrl,
       });
 
+      setPresentations([...presentations, response.data]);
+
       return response.data;
     },
-    [],
+    [setPresentations, presentations],
   );
 
   const getSeatsAvailable = useCallback(
@@ -109,9 +128,20 @@ function PresentationsProvider({ children }: PresentationsProviderProps) {
     [],
   );
 
-  const removePresentation = useCallback(async (presentationId: string) => {
-    await api.delete(`/presentations/${presentationId}`);
-  }, []);
+  const removePresentation = useCallback(
+    async (presentationId: string) => {
+      await api.delete(`/presentations/${presentationId}`);
+
+      const index = presentations.findIndex(
+        presentation => presentation.id === presentationId,
+      );
+
+      const newArray = [...presentations].splice(index, 1);
+
+      setPresentations(newArray);
+    },
+    [presentations],
+  );
 
   const showFinances = useCallback(
     async (presentationId: string): Promise<Finance> => {
@@ -119,21 +149,58 @@ function PresentationsProvider({ children }: PresentationsProviderProps) {
         `/presentations/finances/${presentationId}`,
       );
 
+      setFinances(response.data);
+
       return response.data;
     },
     [],
+  );
+
+  const updatePresentation = useCallback(
+    async ({
+      id,
+      name,
+      description,
+      date,
+      imageUrl,
+    }: PresentationUpdateProps): Promise<Presentation> => {
+      const formattedDate = format(date, 'yyyy/MM/dd HH:mm');
+
+      const response = await api.put('/presentations', {
+        id,
+        name,
+        description,
+        date: formattedDate,
+        imageUrl,
+      });
+
+      const updated = presentations.map(p => {
+        if (p.id === response.data.id) {
+          Object.assign(p, response.data);
+        }
+
+        return p;
+      });
+
+      setPresentations(updated);
+
+      return response.data;
+    },
+    [presentations],
   );
 
   return (
     <PresentationsContext.Provider
       value={{
         presentations,
+        finances,
         setPresentations,
         loadPresentations,
         registerPresentation,
         getSeatsAvailable,
         removePresentation,
         showFinances,
+        updatePresentation,
       }}
     >
       {children}

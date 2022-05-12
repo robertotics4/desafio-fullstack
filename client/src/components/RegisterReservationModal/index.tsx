@@ -86,12 +86,10 @@ function RegisterReservationModal({
         const presentationSeat = findConcatenatedSeat(data.reservedSeat);
 
         if (presentationSeat) {
-          const reservation = await registerReservation({
+          await registerReservation({
             presentationId: presentation.id,
             presentationSeatId: presentationSeat?.id,
           });
-
-          setReservations([...reservations, reservation]);
 
           Swal.fire(
             'Sucesso!',
@@ -175,6 +173,7 @@ function RegisterReservationModal({
             {availableSeats &&
               availableSeats.map(availableSeat => (
                 <option
+                  key={availableSeat.id}
                   value={`${availableSeat.seat.row}${availableSeat.seat.num}`}
                 >{`${availableSeat.seat.row}${availableSeat.seat.num}`}</option>
               ))}

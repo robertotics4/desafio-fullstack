@@ -37,6 +37,7 @@ import { RegisterReservationModal } from '../../components/RegisterReservationMo
 import { useReservations } from '../../hooks/reservations';
 import Loading from '../../components/Loading';
 import { FinanceModal } from '../../components/FinanceModal';
+import { UpdatePresentationModal } from '../../components/UpdatePresentationModal';
 
 function Main() {
   const { user, signOut } = useAuth();
@@ -47,14 +48,13 @@ function Main() {
   const [showModalOpen, setShowModalopen] = useState(false);
   const [financeModalOpen, setFinanceModalOpen] = useState(false);
   const [reservationModalOpen, setReservationModalOpen] = useState(false);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedPresentation, setSelectedPresentation] =
     useState<Presentation>({} as Presentation);
   const [{ isLoading, message }, { start: startLoading, stop: stopLoading }] =
     useLoading();
 
-  useEffect(() => {
-    loadPresentations();
-  }, [presentations, reservations, loadPresentations]);
+  useEffect(() => {}, [presentations, reservations, loadPresentations]);
 
   const toggleRegistrationModalOpen = useCallback(() => {
     setRegistrationModalOpen(!registrationModalOpen);
@@ -84,6 +84,14 @@ function Main() {
     [financeModalOpen],
   );
 
+  const toggleUpdateModalOpen = useCallback(
+    (presentation: Presentation) => {
+      setSelectedPresentation(presentation);
+      setUpdateModalOpen(!updateModalOpen);
+    },
+    [updateModalOpen],
+  );
+
   const handleRemovePresentation = useCallback(
     (presentationId: string) => {
       Swal.fire({
@@ -98,6 +106,7 @@ function Main() {
         if (result.isConfirmed) {
           startLoading('Removendo espetáculo...');
           await removePresentation(presentationId);
+          await loadPresentations();
           stopLoading();
           Swal.fire('Excluído com sucesso!', '', 'success');
         } else if (result.isDenied) {
@@ -105,7 +114,7 @@ function Main() {
         }
       });
     },
-    [removePresentation, startLoading, stopLoading],
+    [removePresentation, startLoading, stopLoading, loadPresentations],
   );
 
   useEffect(() => {
@@ -139,10 +148,9 @@ function Main() {
               <PresentationInfo>
                 <h2>{presentation.name}</h2>
                 <span>
-                  {`${
-                    presentation.presentationSeats.length -
-                    presentation.reservations.length
-                  } poltronas disponíveis`}
+                  {new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(
+                    new Date(presentation.date),
+                  )}
                 </span>
               </PresentationInfo>
 
@@ -172,7 +180,7 @@ function Main() {
                 )}
 
                 {user.isAdmin && (
-                  <Action>
+                  <Action onClick={() => toggleUpdateModalOpen(presentation)}>
                     <FiEdit size={20} />
                   </Action>
                 )}
@@ -209,6 +217,12 @@ function Main() {
       <FinanceModal
         isOpen={financeModalOpen}
         setIsOpen={() => toggleFinanceModalOpen(selectedPresentation)}
+        presentation={selectedPresentation}
+      />
+
+      <UpdatePresentationModal
+        isOpen={updateModalOpen}
+        setIsOpen={() => toggleUpdateModalOpen(selectedPresentation)}
         presentation={selectedPresentation}
       />
 

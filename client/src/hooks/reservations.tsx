@@ -64,9 +64,11 @@ function ReservationsProvider({ children }: ReservationsProviderProps) {
         presentationSeatId,
       });
 
+      setReservations([...reservations, response.data]);
+
       return response.data;
     },
-    [],
+    [reservations, setReservations],
   );
 
   return (
