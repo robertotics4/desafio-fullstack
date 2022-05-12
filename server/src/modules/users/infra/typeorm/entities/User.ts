@@ -31,7 +31,9 @@ class User {
   @CreateDateColumn()
   updated_at: Date;
 
-  @OneToMany(() => Reservation, reservation => reservation.user)
+  @OneToMany(() => Reservation, reservation => reservation.user, {
+    eager: true,
+  })
   reservations: Reservation[];
 
   constructor() {
