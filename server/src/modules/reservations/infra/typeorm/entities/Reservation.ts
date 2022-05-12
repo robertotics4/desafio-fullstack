@@ -40,7 +40,7 @@ class Reservation {
   @JoinColumn()
   presentation: Presentation;
 
-  @OneToOne(() => PresentationSeat)
+  @OneToOne(() => PresentationSeat, { eager: true })
   @JoinColumn()
   presentationSeat: PresentationSeat;
 
