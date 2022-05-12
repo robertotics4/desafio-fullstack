@@ -114,7 +114,7 @@ function Main() {
         }
       });
     },
-    [removePresentation, startLoading, stopLoading, loadPresentations],
+    [removePresentation, startLoading, stopLoading],
   );
 
   useEffect(() => {
