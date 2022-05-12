@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  sqlite3:
+    image: nouchka/sqlite3:latest
+    container_name: database_desafio_fullstack
+    stdin_open: true
+    tty: true
+    restart: always
+    ports:
+      - 9000:9000
+    environment:
+      - SQLITE_USER=docker
+      - SQLITE_PASSWORD=desafiofullstack
+      - SQLITE_DB=db_desafio_fullstack
+    volumes:
+      - ./database/:/root/database/
+  app:
+    build: .
+    container_name: backend_desafio_fullstack
+    ports:
+      - 3333:3333
+    volumes:
+      - .:/usr/app
+    links:
+      - sqlite3
+    depends_on:
+      - sqlite3
