@@ -154,7 +154,7 @@ function Main() {
             <img src={logo} alt="Logomarca da pulse" />
             <UserEmail>{user.email}</UserEmail>
             <ProfileButton onClick={handleReservationsButton}>
-              Minhas Reservas
+              Profile
             </ProfileButton>
           </Title>
 
