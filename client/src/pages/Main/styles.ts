@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Button from '../../components/Button';
 
 export const Container = styled.div`
   display: flex;
@@ -153,5 +154,19 @@ export const RegisterPresentationButton = styled.button`
 
   svg {
     margin-right: 8px;
+  }
+`;
+
+export const ProfileButton = styled.button`
+  margin-top: 16px;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background: var(--success);
+  color: var(--titles);
+  transition: filter 0.2s;
+
+  &:hover {
+    filter: brightness(0.8);
   }
 `;

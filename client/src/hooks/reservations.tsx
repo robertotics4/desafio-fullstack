@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 
 import { api } from '../services/api';
+import Profile from '../types/Profile';
 import Reservation from '../types/Reservation';
 
 interface ReservationsContextData {
@@ -11,6 +12,7 @@ interface ReservationsContextData {
     presentationId,
     presentationSeatId,
   }: ReservationRequest): Promise<Reservation>;
+  showProfileAndReservations(): Promise<Profile>;
 }
 
 interface ReservationsProviderProps {
@@ -71,6 +73,12 @@ function ReservationsProvider({ children }: ReservationsProviderProps) {
     [reservations, setReservations],
   );
 
+  const showProfileAndReservations = useCallback(async () => {
+    const response = await api.get(`/users/profile`);
+
+    return response.data;
+  }, []);
+
   return (
     <ReservationsContext.Provider
       value={{
@@ -78,6 +86,7 @@ function ReservationsProvider({ children }: ReservationsProviderProps) {
         loadReservations,
         registerReservation,
         setReservations,
+        showProfileAndReservations,
       }}
     >
       {children}

@@ -6,6 +6,7 @@ import {
   FiDollarSign,
   FiPlus,
   FiUserCheck,
+  FiLock,
 } from 'react-icons/fi';
 import { useCallback, useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
@@ -25,6 +26,7 @@ import {
   Action,
   Box,
   RegisterPresentationButton,
+  ProfileButton,
 } from './styles';
 
 import logo from '../../assets/logo.svg';
@@ -38,10 +40,12 @@ import { useReservations } from '../../hooks/reservations';
 import Loading from '../../components/Loading';
 import { FinanceModal } from '../../components/FinanceModal';
 import { UpdatePresentationModal } from '../../components/UpdatePresentationModal';
+import { UserReservationsModal } from '../../components/UserReservationsModal';
+import Profile from '../../types/Profile';
 
 function Main() {
   const { user, signOut } = useAuth();
-  const { reservations } = useReservations();
+  const { reservations, showProfileAndReservations } = useReservations();
   const { presentations, loadPresentations, removePresentation } =
     usePresentations();
   const [registrationModalOpen, setRegistrationModalOpen] = useState(false);
@@ -49,8 +53,10 @@ function Main() {
   const [financeModalOpen, setFinanceModalOpen] = useState(false);
   const [reservationModalOpen, setReservationModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [userReservationsModal, setUserReservationsModal] = useState(false);
   const [selectedPresentation, setSelectedPresentation] =
     useState<Presentation>({} as Presentation);
+  const [userProfile, setUserProfile] = useState<Profile>({} as Profile);
   const [{ isLoading, message }, { start: startLoading, stop: stopLoading }] =
     useLoading();
 
@@ -92,6 +98,21 @@ function Main() {
     [updateModalOpen],
   );
 
+  const toggleUserReservationsModal = useCallback(() => {
+    setUserReservationsModal(!userReservationsModal);
+  }, [userReservationsModal]);
+
+  const handleReservationsButton = useCallback(async () => {
+    const profileAndReservations = await showProfileAndReservations();
+
+    if (!profileAndReservations.reservations.length) {
+      Swal.fire('Reservas', 'Você não possui reservas no momento', 'info');
+    } else {
+      setUserProfile(profileAndReservations);
+      toggleUserReservationsModal();
+    }
+  }, [showProfileAndReservations, toggleUserReservationsModal]);
+
   const handleRemovePresentation = useCallback(
     (presentationId: string) => {
       Swal.fire({
@@ -132,6 +153,9 @@ function Main() {
           <Title>
             <img src={logo} alt="Logomarca da pulse" />
             <UserEmail>{user.email}</UserEmail>
+            <ProfileButton onClick={handleReservationsButton}>
+              Minhas Reservas
+            </ProfileButton>
           </Title>
 
           <UserInfo>
@@ -224,6 +248,12 @@ function Main() {
         isOpen={updateModalOpen}
         setIsOpen={() => toggleUpdateModalOpen(selectedPresentation)}
         presentation={selectedPresentation}
+      />
+
+      <UserReservationsModal
+        isOpen={userReservationsModal}
+        setIsOpen={() => toggleUserReservationsModal()}
+        profile={userProfile}
       />
 
       {isLoading && (
